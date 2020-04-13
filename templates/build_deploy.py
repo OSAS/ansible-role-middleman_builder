@@ -230,7 +230,8 @@ status_file = os.path.expanduser('~/status_%s.yml' % name)
 status = {}
 if os.path.exists(status_file):
     with open(status_file) as f:
-        status = yaml.safe_load(f)
+        # in case it's empty
+        status = yaml.safe_load(f) or {}
 
 checkout_dir = os.path.expanduser("~/%s" % name)
 if not os.path.isdir(checkout_dir):
