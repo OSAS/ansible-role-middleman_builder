@@ -2,6 +2,8 @@
 rsync_package: rsync
 package_list:
   common:
+    - python3
+    - python3-yaml
     - git
     # used to send email about build broken
     - mutt
@@ -17,7 +19,6 @@ package_list:
     # nokogiri also requires zlib-devel and tar to build libxml
     - zlib1g-dev
     - tar
-    - python-yaml
     - libxml2-dev
     - libxslt1-dev
     - libidn11-dev

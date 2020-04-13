@@ -1,4 +1,4 @@
-#!/usr/bin/python{{ ((ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8) or (ansible_os_family == "Debian" and ansible_distribution_major_version|int >= 10)) | ternary('3', '') }}
+#!/usr/bin/env python3
 #
 # Copyright (c) 2015 Michael Scherer <mscherer@redhat.com>
 #
@@ -34,6 +34,7 @@ import atexit
 import syslog
 import argparse
 import shutil
+from io import open
 
 
 parser = argparse.ArgumentParser(description="Build middleman sites based "
@@ -96,7 +97,7 @@ def log_print(message):
     except NameError:
         pass
     else:
-        log_fd.write(message + "\n")
+        log_fd.write(message + u"\n")
         log_fd.flush()
 
 
@@ -112,7 +113,7 @@ def refresh_checkout(checkout_dir):
         result = subprocess.check_output(['git', 'fetch', '-q'], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as C:
         notify_error('setup', C.output)
-    debug_print(result.decode())
+    debug_print(result.decode('utf-8'))
 
 
 def get_last_commit(checkout_dir):
@@ -122,7 +123,7 @@ def get_last_commit(checkout_dir):
                                      'refs/remotes/origin/%s' % config['git_version']])
     except subprocess.CalledProcessError as C:
         notify_error('setup', C.output)
-    return r.decode().split()[0]
+    return r.decode('utf-8').split()[0]
 
 
 def get_last_commit_submodule(checkout_dir, submodule):
@@ -132,7 +133,7 @@ def get_last_commit_submodule(checkout_dir, submodule):
                                      'refs/remotes/origin/HEAD'])
     except subprocess.CalledProcessError as C:
         notify_error('setup', C.output)
-    return r.decode().split()[0]
+    return r.decode('utf-8').split()[0]
 
 
 def get_submodules_checkout(checkout_dir):
@@ -142,7 +143,7 @@ def get_submodules_checkout(checkout_dir):
         submodule_status = subprocess.check_output(['git', 'submodule', 'status'])
     except subprocess.CalledProcessError as C:
         notify_error('setup', C.output)
-    for s in submodule_status.decode().split('\n'):
+    for s in submodule_status.decode('utf-8').split('\n'):
         # there is a empty line at the end...
         if s:
             result.append(s.split()[1])
@@ -157,7 +158,7 @@ def load_config(config_file):
         print("Error %s is not a file" % config_file)
         sys.exit(1)
 
-    with open(config_file) as f:
+    with open(config_file, encoding='utf-8') as f:
         config = yaml.safe_load(f)
 
     return config
@@ -169,7 +170,7 @@ def has_submodules(checkout_dir):
         r = subprocess.check_output(['git', 'submodule', 'status'])
     except subprocess.CalledProcessError as C:
         notify_error('setup', C.output)
-    return len(r.decode()) > 0
+    return len(r.decode('utf-8')) > 0
 
 
 # TODO complete that
@@ -197,7 +198,7 @@ def do_rsync(source):
                 config['remote']], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as C:
         notify_error('setup', C.output)
-    return r.decode()
+    return r.decode('utf-8')
 
 
 
@@ -229,7 +230,7 @@ atexit.register(os.unlink, lock_file)
 status_file = os.path.expanduser('~/status_%s.yml' % name)
 status = {}
 if os.path.exists(status_file):
-    with open(status_file) as f:
+    with open(status_file, encoding='utf-8') as f:
         # in case it's empty
         status = yaml.safe_load(f) or {}
 
@@ -281,11 +282,11 @@ os.environ['LANGUAGE'] = 'en_US.UTF-8'
 # Do not open earlier or we would end-up logging a lot of
 # "Nothing to build" messages and lose the last build log.
 log_file = os.path.expanduser('~/%s.log' % name)
-log_fd = open(log_file, "w")
-log_fd.write("last_build_date: {}\n".format(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S (UTC)")))
-log_fd.write("last_build_commit: {}\n".format(current_commit))
-log_fd.write("submodule_commits: {}\n".format(current_submodule_commits))
-log_fd.write("\n")
+log_fd = open(log_file, "w", encoding='utf-8')
+log_fd.write(u"last_build_date: {}\n".format(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S (UTC)")))
+log_fd.write(u"last_build_commit: {}\n".format(current_commit))
+log_fd.write(u"submodule_commits: {}\n".format(current_submodule_commits))
+log_fd.write(u"\n")
 
 syslog.syslog("Start the build of {}".format(name))
 
@@ -293,20 +294,20 @@ os.chdir(checkout_dir)
 if not args.no_refresh:
     try:
         result = subprocess.check_output(['git', 'stash'], stderr=subprocess.STDOUT)
-        debug_print(result.decode())
+        debug_print(result.decode('utf-8'))
         result = subprocess.check_output(['git', 'stash', 'clear'], stderr=subprocess.STDOUT)
-        debug_print(result.decode())
+        debug_print(result.decode('utf-8'))
         result = subprocess.check_output(['git', 'pull', '--rebase'], stderr=subprocess.STDOUT)
-        debug_print(result.decode())
+        debug_print(result.decode('utf-8'))
     except subprocess.CalledProcessError as C:
         notify_error('setup', C.output)
 
 if has_submodules(checkout_dir):
     try:
         result = subprocess.check_output(['git', 'submodule', 'init'], stderr=subprocess.STDOUT)
-        debug_print(result.decode())
+        debug_print(result.decode('utf-8'))
         result = subprocess.check_output(['git', 'submodule', 'sync'], stderr=subprocess.STDOUT)
-        debug_print(result.decode())
+        debug_print(result.decode('utf-8'))
     except subprocess.CalledProcessError as C:
         notify_error('setup', C.output)
 
@@ -336,7 +337,7 @@ if not args.sync_only:
             # don't use embedded libraries to build Nokogiri
             os.environ['NOKOGIRI_USE_SYSTEM_LIBRARIES'] = '1'
             result = subprocess.check_output(['bundle', 'install'], stderr=subprocess.STDOUT)
-            debug_print(result.decode())
+            debug_print(result.decode('utf-8'))
         except subprocess.CalledProcessError as C:
             log_print(C.output)
             if config['remote']:
@@ -356,7 +357,7 @@ if not args.sync_only:
         command = builder_info[config['builder']]['build_command']
         syslog.syslog("Build of {}: {}".format(name, ' '.join(command)))
         result = subprocess.check_output(command, stderr=subprocess.STDOUT)
-        debug_print(result.decode())
+        debug_print(result.decode('utf-8'))
     except subprocess.CalledProcessError as C:
         log_print(C.output)
         if config['remote']:
@@ -379,7 +380,7 @@ if not args.dry_run:
         else:
             command = builder_info[config['builder']]['deploy_command']
             if command:
-                result = subprocess.check_output(command).decode()
+                result = subprocess.check_output(command).decode('utf-8')
             else:
                 result = "No deployment done: no Rsync settings provided and this builder has no reployment method defined"
         debug_print(result)
@@ -391,9 +392,9 @@ else:
 
 status = {}
 status['last_build_commit'] = current_commit
-status['last_build'] = datetime.datetime.now().strftime("%s")
-status['last_build_human'] = datetime.datetime.now().strftime("%c")
+status['last_build'] = datetime.datetime.now().strftime(u"%s")
+status['last_build_human'] = datetime.datetime.now().strftime(u"%c")
 status['submodule_commits'] = current_submodule_commits
 
-with open(status_file, 'w+') as f:
+with open(status_file, 'w+', encoding='utf-8') as f:
     f.write(yaml.safe_dump(status, default_flow_style=False))

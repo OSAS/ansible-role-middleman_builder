@@ -2,6 +2,8 @@
 rsync_package: rsync
 package_list:
   common:
+    - python3
+    - "{{ (ansible_distribution_major_version|int >= 8) | ternary('python3-pyyaml', 'python36-PyYAML') }}"
     - git
     # used to send email about build broken
     - mutt
@@ -19,7 +21,6 @@ package_list:
     # nokogiri also requires zlib-devel and tar to build libxml
     - zlib-devel
     - tar
-    - "{{ (ansible_python['version']['major'] == 3) | ternary('python3-pyyaml', 'PyYAML') }}"
     - libxml2-devel
     - libxslt-devel
     - libidn-devel
