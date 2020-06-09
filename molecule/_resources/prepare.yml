@@ -9,7 +9,6 @@
           # workaround for https://github.com/ansible/ansible/issues/59438
           - hostname
           - glibc-all-langpacks
-        state: installed
       when: ansible_distribution == 'Fedora' or (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
     # to ensure having a real FQDN
     # (dots are not allowed in LXD container names, thus sticking to short names)
@@ -22,7 +21,6 @@
       package:
         name:
           - epel-release
-        state: installed
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Prepare builder host
@@ -34,7 +32,6 @@
           - sudo              # needed for tests
           - openssh-clients   # to communicate between machines
           - crontabs          # to setup cron jobs
-        state: installed
     - name: "Ensure locales variables are preserved with sudo"
       lineinfile:
         path: /etc/sudoers
@@ -54,7 +51,6 @@
       package:
         name:
           - openssh-server    # to communicate between machines
-        state: installed
     - name: start SSH daemon
       service:
         name: sshd
