@@ -7,7 +7,7 @@
   tasks:
     - name: Apply global default parameters
       set_fact:
-        final_platforms: "{{ final_platforms | default([]) | union([platform_base.docker|combine(item)]) }}"
+        final_platforms: "{{ final_platforms | default([]) | union([hostvars[item.name].platform_base.lxd|combine(item)]) }}"
       loop: "{{ molecule_yml.platforms }}"
 
     - name: Create default source variable
@@ -33,3 +33,10 @@
         wait_for_ipv4_addresses: true
         timeout: 600
       with_items: "{{ final_platforms }}"
+
+- hosts: all
+  gather_facts: False
+  tasks:
+    - name: "Setup Image"
+      raw: "{{ image_setup }}"
+      changed_when: True

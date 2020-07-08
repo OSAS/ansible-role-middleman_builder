@@ -1,0 +1,8 @@
+---
+# on Docker starting firewalld after a fresh install breaks the
+# network and future yum installation fails with DNS resolution
+# problems. I used the Log Denied feature of firewalld to investigate
+# but it was empty. At the moment to allow the rest of the role to be
+# tested firerwalling management is disabled.
+manage_firewall: "{{ ansible_virtualization_type != 'docker' }}"
+

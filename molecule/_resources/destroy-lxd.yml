@@ -7,12 +7,12 @@
   tasks:
     - name: Apply global default parameters
       set_fact:
-        final_platforms: "{{ final_platforms | default([]) | union([platform_base.docker|combine(item)]) }}"
+        final_platforms: "{{ final_platforms | default([]) | union([hostvars[item.name].platform_base.lxd|combine(item)]) }}"
       loop: "{{ molecule_yml.platforms }}"
 
     - name: Destroy molecule instance(s)
       lxd_container:
-        url: "{{ item.url | default(omit)}}"
+        url: "{{ item.url | default(omit) }}"
         cert_file: "{{ item.cert_file | default(omit) }}"
         key_file: "{{ item.key_file | default(omit) }}"
         trust_password: "{{ item.trust_password | default(omit) }}"

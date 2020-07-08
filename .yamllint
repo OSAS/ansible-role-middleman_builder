@@ -1,4 +1,10 @@
+---
 extends: default
+
+ignore: |
+  .git
+  __pycache__
+  .venv
 
 rules:
   braces:

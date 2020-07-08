@@ -1,0 +1,37 @@
+---
+platform_base:
+  lxd:
+    source:
+      type: image
+      server: https://images.linuxcontainers.org
+  docker:
+    dockerfile: ../_resources/Dockerfile.j2
+    hostname: "@NAME@.example.com"
+    command: /sbin/init
+    privileged: True
+    network_mode: bridge
+    networks:
+      - name: testnetwork
+    purge_networks: yes
+    dns_search_domains:
+      - example.com
+
+# TODO: readd yum update when Docker cgroup bug is fixed
+# TODO: btw why is there no dnf update while there's an equivalent in all other distros?
+image_setup: |
+    if [ $(command -v apt-get) ]; then apt-get update && apt-get upgrade -y && apt-get install -y systemd-sysv python sudo bash ca-certificates && apt-get clean; \
+    elif [ $(command -v dnf) ]; then dnf makecache && dnf --assumeyes install python sudo python-devel python2-dnf bash && dnf clean all; \
+    elif [ $(command -v yum) ]; then yum makecache fast && yum install -y python sudo yum-plugin-ovl bash && sed -i 's/plugins=0/plugins=1/g' /etc/yum.conf && yum clean all; \
+    elif [ $(command -v zypper) ]; then zypper refresh && zypper update -y && zypper install -y python sudo bash python-xml && zypper clean -a; \
+    elif [ $(command -v apk) ]; then apk update && apk add --no-cache python sudo bash ca-certificates; fi
+base_packages:
+  RedHat:
+    - epel-release
+    - net-tools      # netstat is needed for testinfra socket check
+    - bind-utils     # the 'dig' utility is needed for tests
+    - iproute        # needed for network facts
+  Debian:
+    - net-tools      # netstat is needed for testinfra socket check
+    - dnsutils       # the 'dig' utility is needed for tests
+    - iproute2       # needed for network facts
+

@@ -2,40 +2,21 @@
 dependency:
   name: galaxy
 driver:
-  name: lxd
-lint:
-  name: yamllint
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint --nocolor
+  flake8
 provisioner:
   name: ansible
   options:
     vv: True
-  inventory:
-    group_vars:
-      all:
-        platform_base:
-          lxd:
-            source:
-              type: image
-              server: https://images.linuxcontainers.org
-          docker:
-            hostname: "{{ item.name }}.example.com"
-            command: /sbin/init
-            privileged: True
-            network_mode: bridge
-            networks:
-              - name: testnetwork
-                aliases:
-                  # allow access via short DNS name
-                  - "{{ item.name }}"
-        # used to switch the testing branch
-        tests_is_container: False
-    host_vars:
-      ansible-test-builder:
-      ansible-test-web:
+  config_options:
+    defaults:
+      hash_behaviour: merge
   env:
-    LC_ALL: en_US.UTF-8
     LANG: en_US.UTF-8
-    LANGUAGE: en_US.UTF-8
   playbooks:
     docker:
       create: ../_resources/create-docker.yml
@@ -44,10 +25,10 @@ provisioner:
       create: ../_resources/create-lxd.yml
       destroy: ../_resources/destroy-lxd.yml
     prepare: ../_resources/prepare.yml
-    converge: ../_resources/playbook.yml
-  lint:
-    name: ansible-lint
+    converge: ../_resources/converge.yml
 verifier:
   name: testinfra
+  options:
+    v: True
   lint:
     name: flake8
