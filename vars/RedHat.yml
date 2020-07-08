@@ -25,6 +25,9 @@ package_list:
     - libxslt-devel
     - libidn-devel
     - nodejs
+    - openssl-devel
+    # needed for /usr/lib/rpm/redhat/redhat-hardened-cc1
+    - redhat-rpm-config
   middleman: []
   jekyll: []
   ascii_binder: []

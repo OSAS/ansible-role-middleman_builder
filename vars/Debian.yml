@@ -23,6 +23,7 @@ package_list:
     - libxslt1-dev
     - libidn11-dev
     - nodejs
+    - libssl-dev
   middleman: []
   jekyll: []
   ascii_binder: []
