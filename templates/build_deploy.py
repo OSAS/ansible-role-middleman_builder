@@ -189,8 +189,8 @@ def do_rsync(source):
                 'UserKnownHostsFile=/dev/null '
                 '-o '
                 'StrictHostKeyChecking=no '
-                '-i ' +
-                os.path.expanduser('~/.ssh/{}_id.rsa'.format(name)),
+                '-i '
+                + os.path.expanduser('~/.ssh/{}_id.rsa'.format(name)),
                 '--delete-after',
                 '-rltogvz',
                 '--omit-dir-times',
@@ -247,9 +247,9 @@ start_build = False
 last_build = datetime.datetime.fromtimestamp(
     int(status.get("last_build", "0")))
 
-if ('regular_rebuild_interval' in config and
-        datetime.datetime.now() - last_build >
-        datetime.timedelta(hours=config['regular_rebuild_interval'])):
+if ('regular_rebuild_interval' in config
+        and datetime.datetime.now() - last_build
+        > datetime.timedelta(hours=config['regular_rebuild_interval'])):
     start_build = True
 
 current_commit = get_last_commit(checkout_dir)
