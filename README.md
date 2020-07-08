@@ -2,8 +2,8 @@ Ansible module used by OSAS to deploy a static website builder. While
 working, the role is still being written, as seen by the TODO list at the end
 of this document.
 
-Currently this role supports the following web generators:
-* Ascii Binder (http://asciibinder.org/)
+Currently this role works with the following web generators:
+* Ascii Binder (http://asciibinder.org/), should still work but not supported anymore
 * [Jekyll](https://jekyllrb.com/)
 * [Middleman](https://middlemanapp.com/)
 * [Nikola](https://getnikola.com/)
