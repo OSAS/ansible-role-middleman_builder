@@ -10,7 +10,7 @@
       hostname:
         name: "{{ ansible_nodename }}.example.com"
       # using the `hostname` instantiation parameter for Docker, as /etc/hostname cannot be modified
-      when: ansible_virtualization_type != 'docker'
+      when: ansible_virtualization_type != 'docker' and 'example.com' not in ansible_fqdn
     # may cause TLS issues when downloading packages later
     - name: Ensure ca-certificates is up-to-date
       package:
