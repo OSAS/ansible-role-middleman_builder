@@ -17,9 +17,12 @@ platforms:
     image: 'centos:7'
 provisioner:
   inventory:
+    group_vars:
+      all:
+        # workaround for https://github.com/ansible/ansible/issues/70168
+        ansible_python_interpreter: /usr/bin/python3
     host_vars:
       ansible-test-builder:
-        ansible_python_interpreter: /usr/bin/python3
         builder: jekyll
         # known working website
         git_url: https://gitlab.com/osas/osci.io.git

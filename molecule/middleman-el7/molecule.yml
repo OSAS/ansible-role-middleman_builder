@@ -17,6 +17,10 @@ platforms:
     image: 'centos:7'
 provisioner:
   inventory:
+    group_vars:
+      all:
+        # workaround for https://github.com/ansible/ansible/issues/70168
+        ansible_python_interpreter: /usr/bin/python
     host_vars:
       ansible-test-builder:
         builder: middleman
