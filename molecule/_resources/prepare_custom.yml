@@ -19,6 +19,7 @@
     - name: Stop cron
       service:
         name: crond
+        enabled: no
         state: stopped
 
 - name: Prepare web host
