@@ -16,6 +16,13 @@ platform_base:
     dns_search_domains:
       - example.com
 
+docker_network_defaults:
+  # Duck: we need IPv6
+  enable_ipv6: True
+  ipam_config:
+    # RFC 4193
+    - subnet: fdd1:0:0:0::/64
+
 # TODO: readd yum update when Docker cgroup bug is fixed
 # TODO: btw why is there no dnf update while there's an equivalent in all other distros?
 image_setup: |
