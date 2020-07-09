@@ -13,10 +13,12 @@
         rsync_server: ansible-test-web
         rsync_user: web_builder
         rsync_location: /var/www/www.example.com
+        tests_is_container: False
     - name: "Testing role (container)"
       include_role:
         name: ansible-role-web_builder
       vars:
         builder_name: testbuilder_container
         builder_username: web_builder
+        tests_is_container: True
 
