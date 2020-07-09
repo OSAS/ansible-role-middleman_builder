@@ -1,6 +1,9 @@
 ---
 scenario:
   name: nikola-el8
+# pin centos version to workaround a bug in Docker
+#   https://github.com/docker/for-linux/issues/835
+#   https://github.com/systemd/systemd/issues/11752
 platforms:
   - name: ansible-test-builder
     # LXD
@@ -12,17 +15,19 @@ platforms:
   - name: ansible-test-web
     # LXD
     source:
-      alias: 'centos/8/amd64'
+      alias: 'centos/7/amd64'
     # Docker
-    image: 'centos:8'
+    image: 'centos:7.6.1810'
 provisioner:
   inventory:
-    group_vars:
-      all:
-        # workaround for https://github.com/ansible/ansible/issues/70168
-        ansible_python_interpreter: /usr/bin/python3
     host_vars:
       ansible-test-builder:
         builder: nikola
         # known working website
         git_url: https://pagure.io/koji-site.git
+        # workaround for https://github.com/ansible/ansible/issues/70168
+        ansible_python_interpreter: /usr/bin/python3
+      ansible-test-web:
+        # workaround for https://github.com/ansible/ansible/issues/70168
+        ansible_python_interpreter: /usr/bin/python
+
