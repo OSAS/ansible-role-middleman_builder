@@ -9,4 +9,5 @@
       become_user: "{{ builder_username }}"
       become: True
       changed_when: True
+      tags: molecule-idempotence-notest
 
