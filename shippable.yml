@@ -20,6 +20,7 @@ build:
     - docker info
     - pip3 install molecule
     - pip3 install docker
+    - pip3 install yamllint ansible-lint flake8
     - molecule --version
     - molecule --debug --base-config molecule/base_molecule.yml test --driver-name docker --all
 
