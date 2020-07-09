@@ -34,6 +34,13 @@
         name: sshd
         enabled: yes
         state: started
+    - name: Open the firewall for {{ ssh_port }} using firewalld
+      firewalld:
+        port: "22/tcp"
+        permanent: true
+        state: enabled
+        immediate: yes
+      when: manage_firewall|default(True) and ansible_os_family == "RedHat"
     - name: create web builder's user
       user:
         name: web_builder
