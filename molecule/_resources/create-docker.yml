@@ -97,7 +97,7 @@
         cert_path: "{{ item.cert_path | default((lookup('env', 'DOCKER_CERT_PATH') + '/cert.pem')  if lookup('env', 'DOCKER_CERT_PATH') else omit) }}"
         key_path: "{{ item.key_path | default((lookup('env', 'DOCKER_CERT_PATH') + '/key.pem') if lookup('env', 'DOCKER_CERT_PATH') else omit) }}"
         tls_verify: "{{ item.tls_verify | default(lookup('env', 'DOCKER_TLS_VERIFY')) or false }}"
-        hostname: "{{ item.hostname | default(item.name) }}"
+        hostname: "{{ item.hostname | default(item.name) | replace('@NAME@', item.name) }}"
         image: "{{ item.pre_build_image | default(false) | ternary('', 'molecule_local/') }}{{ item.image }}"
         pull: "{{ item.pull | default (omit) }}"
         memory: "{{ item.memory | default(omit) }}"
