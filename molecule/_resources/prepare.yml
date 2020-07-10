@@ -4,6 +4,18 @@
   hosts: all
   gather_facts: yes
   tasks:
+    - name: "Display kernel version"
+      debug:
+        var: ansible_kernel_version
+    - name: "Display OS version #1"
+      slurp:
+        src: "{{ (ansible_os_family == 'Debian') | ternary('/etc/debian_version', '/etc/redhat-release') }}"
+      ignore_errors: True
+      changed_when: False
+      register: os_version
+    - name: "Display OS version #1"
+      debug:
+        msg: "{{ os_version['content'] | b64decode }}"
     # to ensure having a real FQDN
     # (dots are not allowed in LXD container names, thus sticking to short names)
     - name: set proper hostname
