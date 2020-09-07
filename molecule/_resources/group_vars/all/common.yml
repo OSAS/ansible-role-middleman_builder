@@ -26,7 +26,7 @@ docker_network_defaults:
 # TODO: readd yum update when Docker cgroup bug is fixed
 # TODO: btw why is there no dnf update while there's an equivalent in all other distros?
 image_setup: |
-    if [ $(command -v apt-get) ]; then apt-get update && apt-get upgrade -y && apt-get install -y systemd-sysv python sudo bash ca-certificates && apt-get clean; \
+    if [ $(command -v apt-get) ]; then apt-get update && apt-get upgrade -y && apt-get install -y systemd-sysv python3 sudo bash ca-certificates && apt-get clean; \
     elif [ $(command -v dnf) ]; then dnf makecache && dnf --assumeyes install python3 sudo python3-devel python3-dnf bash && dnf clean all; \
     elif [ $(command -v yum) ]; then yum makecache fast && yum install -y python sudo yum-plugin-ovl bash && sed -i 's/plugins=0/plugins=1/g' /etc/yum.conf && yum clean all; \
     elif [ $(command -v zypper) ]; then zypper refresh && zypper update -y && zypper install -y python sudo bash python-xml && zypper clean -a; \

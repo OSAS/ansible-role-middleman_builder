@@ -28,6 +28,7 @@
         - item.registry.credentials.username is defined
 
     - name: Create Dockerfiles from image names
+      # noqa 208
       template:
         src: "{{ item.dockerfile | default('Dockerfile.j2') }}"
         dest: "{{ molecule_ephemeral_directory }}/Dockerfile_{{ item.image | regex_replace('[^a-zA-Z0-9_]', '_') }}"
