@@ -70,6 +70,7 @@
         path: "/srv/builder/{{ builder_repo[builder].subdest }}/{{ item }}"
         owner: '{{ builder_username }}'
         group: '{{ builder_username }}'
+        mode: 0755
         recurse: yes
       with_items: "{{ builder_repo[builder].writable_subdirs | default([]) }}"
   when: builder_repo[builder] is defined
@@ -132,6 +133,9 @@
   template:
     dest: "/srv/builder/{{ builder_name }}.yml"
     src: builder.yml.j2
+    owner: '{{ builder_username }}'
+    group: '{{ builder_username }}'
+    mode: 0644
 
 - name: Install Rsync
   package:

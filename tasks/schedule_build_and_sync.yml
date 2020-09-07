@@ -53,6 +53,7 @@
     path: /srv/builder/.ssh/config
     owner: "{{ builder_username }}"
     group: "{{ builder_username }}"
+    mode: 0644
     block: |
       Match Host {{ rsync_server }} User {{ rsync_user }}
           IdentityFile /srv/builder/.ssh/{{ builder_name }}_id.rsa
