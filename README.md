@@ -1,3 +1,5 @@
+**This repository is obsolete**, this project moved to https://gitlab.com/osci/ansible-role-web_builder
+
 Ansible module used by OSAS to deploy a static website builder. While
 working, the role is still being written, as seen by the TODO list at the end
 of this document.
